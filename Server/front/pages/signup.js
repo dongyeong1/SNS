@@ -1,13 +1,14 @@
-import React,{useState,useCallback} from 'react'
+import React,{useState,useCallback,useEffect} from 'react'
 import AppLayout from '../components/AppLayout'
 import {Button, Checkbox, Form,Input} from 'antd'
 import useinput from '../hooks/useinput'
 import { useDispatch, useSelector } from 'react-redux'
 import { SIGN_UP_REQUEST } from '../reducers/user'
+import  Router  from 'next/router'
 
 function signup() {
     const dispatch =useDispatch();
-    const {signupLoading}=useSelector((state)=>state.user)
+    const {signupLoading,signupDone,signupError}=useSelector((state)=>state.user)
 
     const [email,onChangeEmail]=useinput('')
     const [nickname,onChangeNickname]=useinput('')
@@ -27,7 +28,28 @@ function signup() {
         setTerm(e.target.checked)
     },[])
     const [termError,setTermError]=useState(false)
+
+    const {me}=useSelector((state)=>state.user)
+
+    useEffect(()=>{
+      if((me&&me.id)){
+        Router.replace('/')
+      }
+      
+    },[me&&me.id])
    
+    useEffect(()=>{
+        if(signupDone){
+            Router.replace('/')
+        }
+    },[signupDone])
+
+    useEffect(()=>{
+        if(signupError){
+            console.log('errrrrr')
+            alert(signupError)
+        }
+    },[signupError])
 
     const onSubmit=()=>{
         console.log('assd')

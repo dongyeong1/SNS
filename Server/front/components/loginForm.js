@@ -1,4 +1,4 @@
-import React from 'react'
+import React ,{useEffect}from 'react'
 import {Button, Form,Input} from 'antd'
 import Link from 'next/link'
 import styled from 'styled-components'
@@ -18,11 +18,16 @@ function LoginForm() {
 
     const dispatch=useDispatch();
 
-    const { loginLoading } =useSelector((state)=>state.user)
+    const { loginLoading ,loginError} =useSelector((state)=>state.user)
 
     const [email,onChangeEmail]=useinput('')
     const [password,onChangePassword]=useinput('')
 
+    useEffect(()=>{
+        if(loginError){
+            alert(loginError)
+        }
+    },[loginError])
 
   
     const onSubmitForm=()=>{

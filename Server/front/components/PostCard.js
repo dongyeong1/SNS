@@ -11,7 +11,7 @@ import CommentForm from './CommentForm';
 // import PostCardContent from './PostCardContent';
 import PostImages from './PostImages';
 import { REMOVE_POST_REQUEST } from '../reducers/post';
-// import FollowButton from './FollowButton';
+import FollowButton from './FollowButton';
 
 const CardWrapper = styled.div`
   margin-bottom: 20px;
@@ -71,7 +71,7 @@ const PostCard = ({ post }) => {
             <EllipsisOutlined />
           </Popover>,
         ]}
-        // extra={<FollowButton post={post} />}
+        extra={id&&<FollowButton post={post} />}
       >
         <Card.Meta
           avatar={<Avatar>{post.User.nickname[0]}</Avatar>}

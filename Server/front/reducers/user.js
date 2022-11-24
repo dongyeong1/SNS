@@ -6,6 +6,15 @@ import { BranchesOutlined } from '@ant-design/icons';
 
 
 export const initialState={
+
+    followingLoading:false,
+    followingDone:false,
+    followingError:null,
+
+    unfollowingLoading:false,
+    unfollowingDone:false,
+    unfollowingError:null,
+
     loginLoading:false,
     loginDone:false,
     loginError:null,
@@ -39,6 +48,14 @@ return{
 
 }
 }
+
+export const FOLLOW_REQUEST='FOLLOW_REQUEST'
+export const FOLLOW_SUCCESS='FOLLOW_SUCCESS'
+export const FOLLOW_FAILURE='FOLLOW_FAILURE'
+
+export const UNFOLLOW_REQUEST='UNFOLLOW_REQUEST'
+export const UNFOLLOW_SUCCESS='UNFOLLOW_SUCCESS'
+export const UNFOLLOW_FAILURE='UNFOLLOW_FAILURE'
 
 export const NICKNAME_REQUEST = 'NICKNAME_REQUEST';
 export const NICKNAME_SUCCESS='NICKNAME_SUCCESS'
@@ -103,14 +120,14 @@ export const reducer = (state=initialState,action)=>{
             case LOG_IN_SUCCESS:
                            draft.loginLoading=false,
                            draft.loginDone=true,
-                           draft.me=dummyUser(action.data);
+                           draft.me=action.data.data;
                            break;
                 case LOG_IN_FAILURE:
                        
                             
                     draft.loginLoading=false,
                     draft.loginDone=false,
-                    draft.loginError=action.err;
+                    draft.loginError=action.error;
                     break;
                         
                 
@@ -150,7 +167,7 @@ export const reducer = (state=initialState,action)=>{
                     
                 case SIGN_UP_FAILURE:
                         
-                        draft.signupError=action.err,
+                        draft.signupError=action.error,
                         draft.signupLoading=false,
                         draft.signupDone=false;
                         break;
@@ -193,11 +210,38 @@ export const reducer = (state=initialState,action)=>{
                             draft.me.Posts=draft.me.Posts.filter((m)=>m.id!==action.data)
                            break; 
                            
-                        
-                           
-                        
-                        
-            default:
+                        case FOLLOW_REQUEST:
+                            draft.followingLoading=true;
+                            draft.followingDone=false;
+                            draft.followingError=null;
+                            break;
+                        case FOLLOW_SUCCESS:
+                            draft.followingLoading=false;
+                            draft.followingDone=true;
+                            draft.me.Followings.push({id:action.data})
+                            break;
+                        case FOLLOW_FAILURE:
+                            draft.followingError=action.err;
+                            draft.followingDone=false;
+                            draft.followingLoading=false;
+                            break;
+                        case UNFOLLOW_REQUEST:
+                            draft.unfollowingLoading=true;
+                            draft.unfollowingDone=false;
+                            draft.unfollowingError=null;
+                            break;
+                        case UNFOLLOW_SUCCESS:
+                            draft.unfollowingLoading=false;
+                            draft.unfollowingDone=true;
+                            draft.me.Followings=draft.me.Followings.filter((v)=>v.id!==action.data)
+                            break;
+                        case UNFOLLOW_FAILURE:
+                            draft.unfollowingError=action.err;
+                            draft.unfollowingDone=false;
+                            draft.unfollowingLoading=false;
+                            break;
+                            
+                default:
                 return state;
         }
     
