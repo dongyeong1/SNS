@@ -16,49 +16,47 @@ import {
 import { ADD_POST_TO_ME, REMOVE_POST_TO_ME } from "../reducers/user";
 
 function addPostAPI(data){
-    return axios.post('/api/post',data)
+    return axios.post('/post',{content:data})
 }
 
 function* addPost(action)
 {
     try{
-        // const result = yield call(addPostAPI,action.data)
+        const result = yield call(addPostAPI,action.data)
         
-        yield delay(1000)
-        const id=shortId.generate()
+        // yield delay(1000)
+        // const id=shortId.generate()
         yield put({
             type:ADD_POST_SUCCESS,
-            data:{
-                id,
-                content:action.data
-            }
+            data:result.data
         })
         yield put({
             type:ADD_POST_TO_ME,
-            data:id
+            data:result.data.id
         })
     }catch(err){
+        console.log('errrrorrrrr',err.response.data)
         yield put({
             type:ADD_POST_FAILURE,
-            data:err.response.data
+            erorr:err.response.data
         })
 
     }
 }
 
 function addCommentAPI(data){
-    return axios.post('/api/comment',data)
+    return axios.post(`/post/${data.postId}/comment`,data)
 }
 
 function* addComment(action)
 {
     try{
-        // const result = yield call(addPostAPI,action.data)
-        console.log('123455',action.data)
-        yield delay(1000)
+        const result = yield call(addCommentAPI,action.data)
+        // console.log('123455',action.data)
+        // yield delay(1000)
         yield put({
             type:ADD_COMMENT_SUCCESS,
-            data:action.data
+            data:result.data
         })
     }catch(err){
         yield put({

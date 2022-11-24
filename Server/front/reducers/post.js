@@ -42,30 +42,7 @@ export const initialState={
     addcommentError:null
 }
 
-const dummyPost=(id,content)=>{
-    return{
-        id,
-        content,
-        User:{
-            id:1,
-            nickname:'제로'
-        },
-        Images:[],
-        Comments:[]
-    }
-   
-}
 
-const dummyComment=(content,id)=>{
-    return{
-            id,
-            User:{
-                nickname:'ji'
-            },
-            content,
-           }
-    
-}
 export const ADD_POST_REQUEST='ADD_POST_REQUEST'; 
 export const ADD_POST_SUCCESS='ADD_POST_SUCCESS';
 export const ADD_POST_FAILURE='ADD_POST_FAILURE';
@@ -108,14 +85,14 @@ export const reducer = (state=initialState,action)=>{
                 draft.addpostError=null
                 break;
             case ADD_POST_SUCCESS:
-                draft.mainPosts.unshift(dummyPost(action.data.id,action.data.content))
+                draft.mainPosts.unshift(action.data)
                 draft.addpostDone=true
                 draft.addpostLoading=false
                 break;
             case ADD_POST_FAILURE: 
                 draft.addpostDone=false
                 draft.addpostLoading=false
-                draft.addpostError=action.err
+                draft.addpostError=action.error
                 break;
                 case ADD_COMMENT_REQUEST:    
                 draft.addcommentLoading=true;
@@ -125,8 +102,8 @@ export const reducer = (state=initialState,action)=>{
                 case ADD_COMMENT_SUCCESS:{
                 draft.addcommentDone=true;
                 draft.addcommentLoading=false;
-                const post =draft.mainPosts.find((v)=>v.id===action.data.postId);
-                post.Comments.unshift(dummyComment(action.data.content,action.data.postId));
+                const post =draft.mainPosts.find((v)=>v.id===action.data.PostId);
+                post.Comments.unshift(action.data);
                 break;
                     // const postIndex =state.mainPosts.findIndex((v)=>v.id===action.data.postId);
                     // const post ={...state.mainPosts[postIndex]};

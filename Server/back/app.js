@@ -21,7 +21,7 @@ dotenv.config()
  passportConfig();
 app.use(cors({
     origin:true,
-    credentials:false,
+    credentials:true,//쿠키를 같이전달하고싶으면
 }));
 app.use(express.json());
 app.use(express.urlencoded({extended:true}))
@@ -42,6 +42,10 @@ res.send('hello Express')
 
 app.use('/user',userRouter)
 app.use('/post',postRouter)
+
+// app.use((err,req,res,next)=>{
+
+// })
 
 app.listen(3065,()=>{
     console.log('서버실행중')

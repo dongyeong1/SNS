@@ -34,11 +34,11 @@ try{
         data:result
     })
 }
-catch(err){
-    console.log('loginerr',err)
+catch(error){
+    console.log('loginessadasdasdasrr',error)
     yield put({
         type:LOG_IN_FAILURE,
-        error:err.response.data,
+        error:error.response.data,
     })
 }
 }
