@@ -49,7 +49,7 @@ function LoginForm() {
         <div>
             <label htmlFor='user-password'>비밀번호</label>
             <br></br>
-            <Input name="user-password" value={password} onChange={onChangePassword} required />
+            <Input type='password' name="user-password" value={password} onChange={onChangePassword} required />
         </div>
 
         <ButtonWrapper  style={{marginTop:10}}>

@@ -31,23 +31,15 @@ export const initialState={
     nicknameDone:false,
     nicknameError:null,
 
+    myInfoLoading:false,
+    myInfoDone:false,
+    myInfoError:null,
+
     me:null,
     signUpData:{},
     loginData:{}
 }
 
-
-const dummyUser=(data)=>{
-return{
-    ...data,
-    nickname:'zerodong',
-    id:1,
-    Posts:[{id:1}],
-    Followings:[],
-    Followers:[]
-
-}
-}
 
 export const FOLLOW_REQUEST='FOLLOW_REQUEST'
 export const FOLLOW_SUCCESS='FOLLOW_SUCCESS'
@@ -72,6 +64,10 @@ export const LOG_IN_FAILURE = 'LOG_IN_FAILURE'; // 액션의 이름
 export const LOG_OUT_REQUEST = 'LOG_OUT_REQUEST';
 export const LOG_OUT_FAILURE='LOG_OUT_FAILURE'
 export const LOG_OUT_SUCCESS='LOG_OUT_SUCCESS'
+
+export const LOAD_MY_INFO_REQUEST='LOAD_MY_INFO_REQUEST';
+export const LOAD_MY_INFO_SUCCESS='LOAD_MY_INFO_SUCCESS';
+export const LOAD_MY_INFO_FAILURE='LOAD_MY_INFO_FAILURE';
 
 export const ADD_POST_TO_ME='ADD_POST_TO_ME'
 export const REMOVE_POST_TO_ME='REMOVE_POST_TO_ME'
@@ -207,6 +203,8 @@ export const reducer = (state=initialState,action)=>{
                         //     }
                         // }
                         case REMOVE_POST_TO_ME:
+                            // draft.me.Posts=draft.me.Posts.filter((m)=>m.id!==action.data)
+                            draft.me=action.data
                             draft.me.Posts=draft.me.Posts.filter((m)=>m.id!==action.data)
                            break; 
                            
@@ -240,7 +238,24 @@ export const reducer = (state=initialState,action)=>{
                             draft.unfollowingDone=false;
                             draft.unfollowingLoading=false;
                             break;
+                        case LOAD_MY_INFO_REQUEST:
+                            draft.myInfoDone=false;
+                            draft.myInfoLoading=true;
+                            draft.myInfoError=null;
+                            break;
+                        case LOAD_MY_INFO_SUCCESS:
+                            draft.myInfoDone=true;
+                            draft.myInfoLoading=false;
+                            draft.me=action.data;
                             
+                         
+                            break;
+                        case LOAD_MY_INFO_FAILURE:
+                            draft.myInfoDone=false;
+                            draft.myInfoLoading=false;
+                            draft.myInfoError=action.error;
+                            break;
+
                 default:
                 return state;
         }

@@ -39,7 +39,11 @@ export const initialState={
 
     addcommentLoading:false,
     addcommentDone:false,
-    addcommentError:null
+    addcommentError:null,
+
+    loadPostLoading:false,
+    loadPostDone:false,
+    loadPostError:null,
 }
 
 
@@ -54,6 +58,10 @@ export const ADD_COMMENT_FAILURE='ADD_COMMENT_FAILURE';
 export const REMOVE_POST_REQUEST='REMOVE_POST_REQUEST';
 export const REMOVE_POST_SUCCESS='REMOVE_POST_SUCCESS';
 export const REMOVE_POST_FAILURE='REMOVE_POST_FAILURE';
+
+export const LOAD_POST_REQUEST='LOAD_POST_REQUEST';
+export const LOAD_POST_SUCCESS='LOAD_POST_SUCCESS';
+export const LOAD_POST_FAILURE='LOAD_POST_FAILURE';
 
 
 
@@ -103,7 +111,7 @@ export const reducer = (state=initialState,action)=>{
                 draft.addcommentDone=true;
                 draft.addcommentLoading=false;
                 const post =draft.mainPosts.find((v)=>v.id===action.data.PostId);
-                post.Comments.unshift(action.data);
+                post.Comments.push(action.data);
                 break;
                     // const postIndex =state.mainPosts.findIndex((v)=>v.id===action.data.postId);
                     // const post ={...state.mainPosts[postIndex]};
@@ -134,13 +142,31 @@ export const reducer = (state=initialState,action)=>{
 
                         draft.removepostDone=true;
                         draft.removepostLoading=false;
-                        draft.mainPosts=draft.mainPosts.filter((m)=>m.id!==action.data)
+                        // draft.mainPosts=draft.mainPosts.filter((m)=>m.id!==action.data)
+                        draft.mainPosts=action.data
                         break
                     }
                 case REMOVE_POST_FAILURE:
                     draft.removepostDone=false;
                     draft.removepostLoading=false;
-                    draft.removepostError=action.err;
+                    draft.removepostError=action.error;
+                    break;
+
+                case LOAD_POST_REQUEST:
+                    draft.loadPostDone=false;
+                    draft.loadPostLoading=true;
+                    draft.loadPostError=null;
+                    break;
+
+                case LOAD_POST_SUCCESS:
+                    draft.loadPostDone=true;
+                    draft.loadPostLoading=false;
+                    draft.mainPosts=action.data;
+                    break;
+                case LOAD_POST_FAILURE:
+                    draft.loadPostDone=false;
+                    draft.loadPostLoading=false;
+                    draft.loadPostError=action.error;
                     break;
             default:
                 return state;

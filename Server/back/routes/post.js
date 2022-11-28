@@ -31,6 +31,55 @@ next(error)
    }
 })
 
+router.post('/removePost',isLoggedIn,async (req,res,next)=>{
+    try{
+        await Post.destroy({
+            where:{
+                id:req.body.postId
+            }
+        })
+        const removedPost=await Post.findAll({
+            include:[
+                {
+                    model:Image,
+                },{
+                    model:Comment,
+                
+                },{
+                    model:User
+                }
+            ]
+        });
+        // const removedUser=await User.findOne({
+        //     where:{id:req.user.id},
+        //     include:[
+        //         {
+        //             model:Post
+        //         },{
+        //             model:User,
+        //             as:'Followings',
+        //         },{
+        //             model:User,
+        //             as:'Followers'
+        //         }
+
+        //     ]
+            
+        // })
+        // console.log('removeddata')
+        const abc={
+            removedPost,
+            id:req.body.postId
+        }
+      
+
+        return res.status(201).json(abc)
+    }catch(error){
+        console.error(error)
+        next(error)
+    }
+})
+
 
 router.post('/:postId/comment',isLoggedIn, async (req,res,next)=>{
     try{
@@ -47,11 +96,60 @@ router.post('/:postId/comment',isLoggedIn, async (req,res,next)=>{
          UserId:req.user.id
 
      })
-     return res.status(201).json(comment)
+
+    //  const CommentWithUser= await Comment.findOne({
+    //      where:{
+    //          PostId:req.params.postId
+    //      },
+    //      include:[
+    //         {
+    //             model:User,
+    //             attributes:['nickname']
+    //         }
+    //     ]
+
+    //  })
+     const fullComment = await Comment.findOne({
+        where: { id: comment.id },
+        include: [{
+          model: User,
+          attributes: ['id', 'nickname'],
+        }],
+      })
+
+
+     return res.status(201).json(fullComment)
     }catch(error){
  console.error(error);
  next(error)
     }
+ })
+
+
+
+ router.post('/loadPost',async(req,res,next)=>{
+     try{
+        const fullPost=await Post.findAll({
+            include:[
+                {
+                    model:Image,
+                },{
+                    model:Comment,
+                    include: [{
+                        model: User,
+                        attributes: ['id', 'nickname'],
+                      }],
+                
+                },{
+                    model:User
+                }
+            ]
+        });
+        return res.status(201).json(fullPost)
+     }catch(error){
+         console.error(error);
+         next(error)
+     }
  })
  
 

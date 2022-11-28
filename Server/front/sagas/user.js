@@ -15,7 +15,10 @@ import {
     FOLLOW_SUCCESS,
     FOLLOW_FAILURE,
     UNFOLLOW_FAILURE,
-    UNFOLLOW_SUCCESS} from '../reducers/user'
+    UNFOLLOW_SUCCESS,
+    LOAD_MY_INFO_REQUEST,
+    LOAD_MY_INFO_SUCCESS,
+    LOAD_MY_INFO_FAILURE} from '../reducers/user'
 
 function loginAPI(data){
     return axios.post('/user/login',data)
@@ -127,6 +130,27 @@ function* unfollow(action){
 }
 
 
+function LoadMyInfoAPI(){
+    return axios.get('/user')
+}
+
+function* LoadMyInfo(){
+    try{
+        // yield delay(1000)
+        const result =yield call(LoadMyInfoAPI)
+        yield put({
+            type:LOAD_MY_INFO_SUCCESS,
+            data:result.data
+        })
+    }catch(err){
+        yield put({
+            type:LOAD_MY_INFO_FAILURE,
+            error:err.response.data,
+        })
+          
+    }
+}
+
 function* watchLogin(){
     yield takeLatest(LOG_IN_REQUEST,login)
 }
@@ -142,6 +166,10 @@ function* watchFollowing(){
 function* watchUnFollowing(){
     yield takeLatest(UNFOLLOW_REQUEST,unfollow)
 }
+function* watchLoadMyInfo(){
+    yield takeLatest(LOAD_MY_INFO_REQUEST,LoadMyInfo)
+}
+
 
 
 export default function* userSaga(){
@@ -150,6 +178,7 @@ export default function* userSaga(){
         fork(watchLogOut),
         fork(watchSignup),
         fork(watchFollowing),
-        fork(watchUnFollowing)
+        fork(watchUnFollowing),
+        fork(watchLoadMyInfo)
     ])
 }

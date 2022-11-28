@@ -1,13 +1,44 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
 // const { nextTick } = require('vue/types/umd')
-const { User } = require('../models')
+const { User, Post } = require('../models')
 const passport =require('passport')
 const db = require('../models')
 const { isLoggedIn ,isNotLoggedIn} = require('./middlewares')
 
 
 const router =express.Router()
+
+router.get('/',async(req,res,next)=>{//get /user
+    try{
+       if(req.user){
+        const user = await User.findOne({
+            where:{id:req.user.id},
+            attributes:{
+                exclude:['password']
+            },
+            include:[{
+                model:db.Post,
+                attributes:['id']
+            },{
+                model:db.User,
+                as:'Followings',
+                attributes:['id']
+            },{
+                model:db.User,
+                as:'Followers',
+                attributes:['id']
+            }]
+        });
+        return  res.status(200).json(user);
+       }else{
+           return res.status(200).json(null)
+       }
+    }catch(error){
+        console.error(error)
+        next(error)
+    }
+})
 
 router.post('/',isNotLoggedIn,async(req,res,next)=>{
     try{
