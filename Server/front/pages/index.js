@@ -17,12 +17,14 @@ function index() {
 
     useEffect(()=>{
       dispatch({
-        type:LOAD_MY_INFO_REQUEST
-      })
-      dispatch({
         type:LOAD_POST_REQUEST
       })
+      dispatch({
+        type:LOAD_MY_INFO_REQUEST
+      })
+     
     },[])
+
 
 
   return (

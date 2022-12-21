@@ -178,7 +178,7 @@ export const reducer = (state=initialState,action)=>{
         
                         
                     case NICKNAME_SUCCESS:
-                        
+                            draft.me.nickname=action.data.nickname
                             draft.nicknameLoading=false;
                             draft.nicknameDone=true;
                             break;
@@ -204,8 +204,8 @@ export const reducer = (state=initialState,action)=>{
                         // }
                         case REMOVE_POST_TO_ME:
                             // draft.me.Posts=draft.me.Posts.filter((m)=>m.id!==action.data)
-                            draft.me=action.data
-                            draft.me.Posts=draft.me.Posts.filter((m)=>m.id!==action.data)
+                            // draft.me=action.data
+                            draft.me.Posts=draft.me.Posts.filter((m)=>m.id!==action.data.PostId)
                            break; 
                            
                         case FOLLOW_REQUEST:
@@ -216,7 +216,7 @@ export const reducer = (state=initialState,action)=>{
                         case FOLLOW_SUCCESS:
                             draft.followingLoading=false;
                             draft.followingDone=true;
-                            draft.me.Followings.push({id:action.data})
+                            draft.me.Followings.push({id:action.data.UserId})
                             break;
                         case FOLLOW_FAILURE:
                             draft.followingError=action.err;
@@ -231,7 +231,7 @@ export const reducer = (state=initialState,action)=>{
                         case UNFOLLOW_SUCCESS:
                             draft.unfollowingLoading=false;
                             draft.unfollowingDone=true;
-                            draft.me.Followings=draft.me.Followings.filter((v)=>v.id!==action.data)
+                            draft.me.Followings=draft.me.Followings.filter((v)=>v.id!==action.data.UserId)
                             break;
                         case UNFOLLOW_FAILURE:
                             draft.unfollowingError=action.err;
@@ -247,7 +247,7 @@ export const reducer = (state=initialState,action)=>{
                             draft.myInfoDone=true;
                             draft.myInfoLoading=false;
                             draft.me=action.data;
-                            
+
                          
                             break;
                         case LOAD_MY_INFO_FAILURE:

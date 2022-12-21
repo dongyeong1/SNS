@@ -44,6 +44,18 @@ export const initialState={
     loadPostLoading:false,
     loadPostDone:false,
     loadPostError:null,
+
+    likeLoadding:false,
+    likeDone:false,
+    likeError:null,
+
+    unlikeLoading:false,
+    unlikeDone:false,
+    unlikeError:null,
+
+    removePostLoading:false,
+    removePostDone:false,
+    removePostError:null,
 }
 
 
@@ -62,6 +74,19 @@ export const REMOVE_POST_FAILURE='REMOVE_POST_FAILURE';
 export const LOAD_POST_REQUEST='LOAD_POST_REQUEST';
 export const LOAD_POST_SUCCESS='LOAD_POST_SUCCESS';
 export const LOAD_POST_FAILURE='LOAD_POST_FAILURE';
+
+export const LIKE_POST_REQUEST='LIKE_POST_REQUEST';
+export const LIKE_POST_SUCCESS='LIKE_POST_SUCCESS';
+export const LIKE_POST_FAILURE='LIKE_POST_FAILURE';
+
+export const UNLIKE_POST_REQUEST='UNLIKE_POST_REQUEST';
+export const UNLIKE_POST_SUCCESS='UNLIKE_POST_SUCCESS';
+export const UNLIKE_POST_FAILURE='UNLIKE_POST_FAILURE';
+
+// export const REMOVE_POST_REQUEST='REMOVE_POST_REQUEST';
+// export const REMOVE_POST_SUCCESS='REMOVE_POST_SUCCESS';
+// export const REMOVE_POST_FAILURE='REMOVE_POST_FAILURE';
+
 
 
 
@@ -143,8 +168,9 @@ export const reducer = (state=initialState,action)=>{
                         draft.removepostDone=true;
                         draft.removepostLoading=false;
                         // draft.mainPosts=draft.mainPosts.filter((m)=>m.id!==action.data)
-                        draft.mainPosts=action.data
-                        break
+                        draft.mainPosts=draft.mainPosts.filter((v)=>v.id !==action.data.PostId)
+                        // draft.mainPosts=action.data
+                        break;
                     }
                 case REMOVE_POST_FAILURE:
                     draft.removepostDone=false;
@@ -168,7 +194,69 @@ export const reducer = (state=initialState,action)=>{
                     draft.loadPostLoading=false;
                     draft.loadPostError=action.error;
                     break;
+
+                case LIKE_POST_REQUEST:
+                    draft.likeDone=false;
+                    draft.likeLoadding=true;
+                    draft.likeError=null;
+                    break;
+
+                case LIKE_POST_SUCCESS:{
+                    const post = draft.mainPosts.find((v)=>v.id===action.data.PostId)
+                    post.Likers.push({id:action.data.UserId})
+                    draft.likeDone=true;
+                    draft.likeLoadding=false;
+                    // draft.mainPosts=action.data;
+                    break;
+                }
+                 
+                case LIKE_POST_FAILURE:
+                    draft.likeDone=false;
+                    draft.likeLoadding=false;
+                    draft.likeError=action.error;
+                    break;
+                    case UNLIKE_POST_REQUEST:
+                        draft.unlikeDone=false;
+                        draft.unlikeLoadding=true;
+                        draft.unlikeError=null;
+                        break;
+    
+                    case UNLIKE_POST_SUCCESS:{
+                        const post = draft.mainPosts.find((v)=>v.id===action.data.PostId)
+                        post.Likers=draft.mainPosts.Likers.filter((v)=>v.id!==action.data.PostId)
+                        draft.unlikeDone=true;
+                        draft.unlikeLoadding=false;
+                        // draft.mainPosts=action.data;
+                        break;
+                    }
+                       
+                    case UNLIKE_POST_FAILURE:
+                        draft.unlikeDone=false;
+                        draft.unlikeLoadding=false;
+                        draft.unlikeError=action.error;
+                        break;
+                        // case REMOVE_POST_REQUEST:
+                        //     draft.removePostDone=false;
+                        //     draft.removePostLoading=true;
+                        //     draft.removePostError=null;
+                        //     break;
+        
+                        // case REMOVE_POST_SUCCESS:{
+                        //     draft.mainPosts=draft.mainPosts.filter((v)=>v.id !==action.data.PostId)
+                        //     draft.removePostDone=true;
+                        //     draft.removePostLoading=false;
+                        //     // draft.mainPosts=action.data;
+                        //     break;
+                        // }
+                           
+                        // case REMOVE_POST_FAILURE:
+                        //     draft.removePostDone=false;
+                        //     draft.removePostLoading=false;
+                        //     draft.removePostError=action.error;
+                        //     break;
             default:
+
+
                 return state;
         }    });
 

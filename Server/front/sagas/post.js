@@ -13,6 +13,12 @@ import {
     LOAD_POST_REQUEST,
     LOAD_POST_SUCCESS,
     LOAD_POST_FAILURE,
+    LIKE_POST_REQUEST,
+    UNLIKE_POST_REQUEST,
+    LIKE_POST_FAILURE,
+    LIKE_POST_SUCCESS,
+    UNLIKE_POST_SUCCESS,
+    UNLIKE_POST_FAILURE,
 
 } from '../reducers/post'
 import { ADD_POST_TO_ME, REMOVE_POST_TO_ME } from "../reducers/user";
@@ -71,31 +77,32 @@ function* addComment(action)
 }
 
 function removePostAPI(data){
-    return axios.post('/post/removePost',{postId:data})
+    return axios.delete(`/post/${data}`)
 }
 
 function* removePost(action)
 {
     try{
-        console.log('POSTIDDIDIDIDIDID',action.data)
+        // console.log('POSTIDDIDIDIDIDID',action.data)
         const result = yield call(removePostAPI,action.data)
         // console.log('123455',action.data)
         // yield delay(1000)
-
-        yield console.log('qweqwrqwerwetrwertwe',result.data.removedPost)
-        yield console.log('IDIDIDIDIDIDIDID',result.data.id)
+        yield console.log('dongresulte',result.data)
+        // yield console.log('qweqwrqwerwetrwertwe',result.data.removedPost)
+        // yield console.log('IDIDIDIDIDIDIDID',result.data.id)
         yield put({
             type:REMOVE_POST_SUCCESS,
-            data:result.data.removedPost
+            data:result.data
         })
         yield put({
             type:REMOVE_POST_TO_ME,
-            data:result.data.id
+            data:result.data
         })
     }catch(err){
+        console.log('err',err)
         yield put({
             type:REMOVE_POST_FAILURE,
-            error:err.response.data
+            error:err,
         })
 
     }
@@ -130,6 +137,62 @@ function* loadPost(){
 
 
 
+function likeAPI(data){
+    return axios.patch(`/post/${data}/like`)
+}
+
+function* like(action){
+
+    try{
+        const result=yield call(likeAPI,action.data)
+
+    yield put({
+        type:LIKE_POST_SUCCESS,
+        data:result.data
+    })
+
+
+    }catch(error){
+        console.error(error)
+        yield put({
+            type:LIKE_POST_FAILURE,
+            error:error.response.data
+        })
+    }
+
+
+    
+}
+
+
+function unlikeAPI(data){
+    return axios.delete(`post/${data}/like`)
+}
+
+function* unlike(action){
+
+    try{
+        const result=yield call(unlikeAPI,action.data)
+
+    yield put({
+        type:UNLIKE_POST_SUCCESS,
+        data:result.data
+    })
+
+
+    }catch(error){
+        console.error(error)
+        yield put({
+            type:UNLIKE_POST_FAILURE,
+            error:error.response.data
+        })
+    }
+
+
+    
+}
+
+
 
 function* watchAddPost(){
     yield takeLatest(ADD_POST_REQUEST,addPost)
@@ -143,6 +206,15 @@ function* watchremovePost(){
 function* watchLoadPost(){
     yield takeLatest(LOAD_POST_REQUEST,loadPost)
 }
+function* watchLikePost(){
+    yield takeLatest(LIKE_POST_REQUEST,like)
+}
+function* watchUnLikePost(){
+    yield takeLatest(UNLIKE_POST_REQUEST,unlike)
+}
+
+
+
 
 
 export default function* postSaga(){
@@ -150,6 +222,8 @@ export default function* postSaga(){
         fork(watchAddPost),
         fork(watchAddComment),
         fork(watchremovePost),
-        fork(watchLoadPost)
+        fork(watchLoadPost),
+        fork(watchLikePost),
+        fork(watchUnLikePost)
     ])
 }

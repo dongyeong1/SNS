@@ -24,6 +24,11 @@ function FollowButton({post}) {
             })
         }
     },[isFollowing])
+
+
+    if(post.User.id===me.id){
+        return null
+    }
   return (
       <>
       {isFollowing? <Button loading={unfollowLoading} onClick={onFollow}>언팔로우</Button>: <Button loading={unfollowLoading} onClick={onFollow}>팔로우</Button>}
